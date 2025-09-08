@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FAST BOUNCING CATS</title>
+</head>
+<body>
+<h1>Klik voor 5 snelle bouncende katten-vensters 🐱</h1>
+<button onclick="startChaos()">START CHAOS</button>
+
+<script>
+function startChaos() {
+  const numWindows = 5;  
+  const catImgs = [
+    "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/5/50/Kittyply_edit1.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/1/1e/Large_Siamese_cat_tosses_a_mouse.png"
+  ];
+  const wins = [];
+  const speeds = [];
+
+  for (let i = 0; i < numWindows; i++) {
+    let x = 100 + i*60;
+    let y = 100 + i*60;
+    let newWin = window.open("", "_blank", `width=220,height=180,left=${x},top=${y}`);
+    if (newWin) {
+      let img = catImgs[i % catImgs.length];
+      newWin.document.write(`
+        <body style="margin:0;text-align:center;background:black;color:lime;font-family:Comic Sans MS;">
+          <h3>FAST CAT #${i+1}</h3>
+          <img src="${img}" style="width:200px;height:140px;object-fit:cover;">
+        </body>
+      `);
+      wins.push(newWin);
+      speeds.push({
+        dx: (Math.random() * 5 + 4) * (Math.random() < 0.5 ? -1 : 1), // sneller
+        dy: (Math.random() * 5 + 4) * (Math.random() < 0.5 ? -1 : 1), // sneller
+        x, y
+      });
+    }
+  }
+
+  function bounce() {
+    for (let i = 0; i < wins.length; i++) {
+      let w = wins[i];
+      let s = speeds[i];
+      try {
+        s.x += s.dx;
+        s.y += s.dy;
+
+        if (s.x < 0 || s.x + 220 > screen.width) s.dx *= -1;
+        if (s.y < 0 || s.y + 180 > screen.height) s.dy *= -1;
+
+        w.moveTo(s.x, s.y);
+      } catch (e) {
+        // venster gesloten
+      }
+    }
+    requestAnimationFrame(bounce);
+  }
+  bounce();
+}
+</script>
+</body>
+</html>
